@@ -12,7 +12,7 @@ const urlStruct = {
   '/internal': responses.internal,
   '/notImplemented': responses.notImplemented,
   '/notFound': responses.notFound,
-  '/style.css': responses.getStyle
+  '/style.css': responses.getStyle,
 };
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
