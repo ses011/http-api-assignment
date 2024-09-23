@@ -5,7 +5,54 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
+    const handleResponse = (response) => {
+      response.text().then((resText) => {
 
+        const contentType = response.headers.get('Content-Type');
+
+        const content = document.querySelector("#content");
+
+        let parsedResponse;
+
+        if(contentType === 'application/json') {
+          //Parse the json back into a javascript object, and display the data.
+          parsedResponse = JSON.parse(resText);
+          content.innerHTML = `<p>Message: ${parsedResponse.message}</p>`;
+          
+        } else if (contentType === 'text/xml') { //If the server sent back xml
+          //Parse the xml into a document and select the data out.
+          parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
+          content.innerHTML = `<p>${parsedResponse.querySelector("message").textContent}</p>`;
+        }
+      })
+    }
+
+
+
+    const sendFetchReq = (page, type) => {
+      const options = {
+        method: "GET",
+        headers: {"Accept": type}
+      }
+
+      const fetchPromise = fetch(page, options);
+
+      fetchPromise.then((response) => handleResponse(response));
+    }
+
+    const init = () => {
+      const sendButton = document.querySelector("#send");
+
+      sendButton.onclick = () => {
+        const page = document.querySelector("#page").value;
+        const type = document.querySelector("#type").value;
+
+        sendFetchReq(page, type);
+      }
+      
+    }
+    
+    window.onload = init;
   </script>
 </head>
 <body>
